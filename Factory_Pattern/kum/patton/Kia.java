@@ -1,17 +1,12 @@
 package patton;
 
-public class Kia implements CarBrand {
+public class Kia extends CarBrand {
 
 	@Override
 	public String getName()
 	{
-		return "K7";
+		return "케이칠";
 	}
 
-	@Override
-	public int getPrice() 
-	{
-		return 9000;
-	}
 
 }

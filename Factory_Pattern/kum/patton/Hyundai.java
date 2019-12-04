@@ -1,17 +1,12 @@
 package patton;
 
-public class Hyundai implements CarBrand {
+public class Hyundai extends CarBrand {
 
 	@Override
 	public String getName() 
 	{
-		return "그랜져";
+		return "그랑조";
 	}
 
-	@Override
-	public int getPrice() 
-	{
-		return 10000;
-	}
 
 }

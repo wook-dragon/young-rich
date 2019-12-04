@@ -1,17 +1,13 @@
 package patton;
 
-public class Samsung implements CarBrand {
+public class Samsung extends CarBrand {
 
 	@Override
 	public String getName() 
 	{
-		return "SM6";
+		return "에스엠오";
 	}
 
-	@Override
-	public int getPrice()
-	{
-		return 5000;
-	}
+	
 
 }

@@ -1,6 +1,6 @@
 package patton;
 
-public interface CarBrand {
-	String getName();
-	int getPrice();
+public abstract class CarBrand {
+	public abstract String getName();
+
 }

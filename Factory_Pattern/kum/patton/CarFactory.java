@@ -1,17 +1,17 @@
 package patton;
 
 public class CarFactory {
-	public static CarBrand createKia() {
+	public static Kia createKia() {
 		return new Kia();
 		
 	}
 	
-	public static CarBrand createHyundai() {
+	public static Hyundai createHyundai() {
 		return new Hyundai();
 		
 	}
 	
-	public static CarBrand createSamsung() {
+	public static Samsung createSamsung() {
 		return new Samsung();
 		
 	}
