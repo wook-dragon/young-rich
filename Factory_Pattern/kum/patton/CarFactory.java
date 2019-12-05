@@ -1,18 +1,16 @@
 package patton;
+enum CarNames {
+	Kia , Hyundai 
+}
 
 public class CarFactory {
-	public static Kia createKia() {
-		return new Kia();
+	public static CarBrand createCar(CarNames Car) {
+		switch(Car) {
+		case Kia : return new Kia();
+		case Hyundai : return new Hyundai();
+		default : return null;
+		}
 		
-	}
-	
-	public static Hyundai createHyundai() {
-		return new Hyundai();
-		
-	}
-	
-	public static Samsung createSamsung() {
-		return new Samsung();
 		
 	}
 }
