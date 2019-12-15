@@ -1,0 +1,133 @@
+Interceptor란 컨트롤러에 들어오는 요청 HttpRequest와 컨트롤러가 응답하는 HttpResponse를 가로채는 역할을 합니다.
+
+인터셉터는 관리자만 접근할 수 있는 관리자 페이지에 접근하기 전에 관리자 인증을 하는 용도로 활용될 수 있습니다.
+
+
+ 인터셉터는 웹 MVC 동작과정 중에서 할 수 있습니다. 예를 컨트롤러를 실행하기 전, 컨트롤러를 실행 후, 
+ 뷰 실행전, 뷰를 실행한 이후에 메서드를 실행하여 특정 시점에서 원하는 기능을 실행시킬 수 있습니다.
+
+@GetMapping
+public String form(
+	@ModelAtribute("command") ChangePWDCommand pwdCmd,
+	HttpSession session) {
+	Authlnfo authlnfo = (Authlnfo) session.getAttribute("authlnfo");
+	if(authlnfo == null) {
+	return "redirect:/login";
+	}
+	return "edit/changePwdForm";
+}
+
+org.springframework.web.HandlerInterceptor 인터페이스 사용하면 다음의 세시점에 공통 기능을 넣을 수 있다. 
+
+
+boolean preHandle (
+	HttpServletRequest request,
+	HttpServletResponse response,
+	Object handler) throws Exception;
+
+void postHandler(
+	HttpServletRequest request,
+	HttpServletResponse response,
+	Object handler,
+	ModelAndView modelandview) throws Exception;
+
+void afterCompletion (
+	HttpServletRequest request,
+	HttpServletResponse response,
+	Object handler,
+	Exception ex) throws Exception;
+
+설정
+<bean id="sampleInterceptor" class="com.doubles.mvcboard.tutorial.interceptor.SampleInterceptor" />
+
+<mvc:interceptors>
+	<mvc : mapping path="/interceptor /doA"/>
+	<mvc : mapping path="/interceptor /doB"/>
+	<ref bean="sampleInterceptor"/>
+    </mvc:interceptor>
+</mvc:interceptors>
+
+preHanddle() 메소드는 컨트롤러(핸들러) 객체를 실행하기전에 필요한 기능을 구현 할 때 사용 , handle 파라미터는 웹 요청을 처리할 컨트롤러(핸들러) 객체
+
+
+preHandle() 컨트롤러를 실행하기 전에 실행되는 메서드로, false를 리턴하면 컨트롤러를 실행하지 않습니다.
+postHandle() 컨트롤러가 정상적으로 실행된 이후에 실행되는 메서드로 익셉션을 발생하면 실행되지 않습니다.
+afterCompletion() 뷰가 클라이언트 응답을 전송한 뒤 실행됩니다.
+
+HandlerInterceptor 인터페이스의 각 메소드는 아무 기능도 구현하지 않은 자바 8의 defalut 메소드 이다. 따라서 
+HandlerInterceptor 인터페이스의 메소드는 모두 구현할 필요가 없다.
+
+설정 
+
+
+
+Filter와 Interceptor의 차이
+
+1. 호출 시점
+
+Filter는 DispatcherServlet이 실행되기 전 , Interceptor는 DispatcherServlet이 실행된 후
+
+
+
+2. 설정 위치
+
+Filter는 web.xml , Interceptor는 spring-servlet.xml
+
+
+
+3. 구현 방식
+
+Filter는 web.xml에서 설정을 하면 구현이 가능하지만, Interceptor는 설정은 물론 메서드 구현이 필요합니다.
+
+servlet-context.xml 설정
+<!--  인터셉터 선언 -->
+	<beans:bean id="homeInterceptor" class="com.example.spring01.HomeInterceptor" />
+	<!--  인터셉터와 url맵핑 -->
+	<interceptors>
+		<interceptor>
+			<mapping path=""/>
+			<beans:ref bean="homeInterceptor" />
+		</interceptor>
+	</interceptors>
+    
+    <beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+      <beans:property name="order" value="0"/>
+    </beans:bean>
+
+뷰 영역 구현
+
+뷰 RESOLVER 인터페이스 
+
+ package org.springframework.web.servlet;
+
+ import java.util.Locale;
+
+ public interface ViewResolver {
+    View resolveViewName(String viewName, Locale locale) throws Exception;
+ }
+
+ 특징
+      - 뷰 이름과 지역화를 위한 Locale을 파라미터로 전달 받음.
+      - 매핑되는 View 객체를 리턴.
+      - 매핑되는 View 객체가 존재하지 않으면 null을 리턴.
+
+설정
+
+ <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+    p:prefix="/WEB-INF/viewjsp/" p:suffix=".jsp" />
+      - 컨트롤러가 지정한 뷰 이름으로 부터 실제로 사용될 뷰를 선택.
+      - 컨트롤러가 지정한 뷰 이름 앞뒤로 prefix 프로퍼티와 suffix 프로퍼티를 붙인 값이 실제로 사용될 자원의 경로가 됨.
+
+
+
+	
+
+
+컨트롤러는 최종적으로 결과를 출력할 뷰와 뷰에 전달할 객체를 담고 있는 ModelAndView 객체를 리턴한다.
+
+DispatherServlet은 ViewResolver를 사용하여 결과를 출력할 View 객체를 구하고, 구한 View 객체를 이용하여 내용을 생성한다.
+스프링 컨트롤러의 특징
+    - 뷰에 의존적이지 않음.
+    - 결과를 생성할 뷰의 이름만 지정.
+    - 컨트롤러가 지정한 뷰 이름으로부터 응답 결과 화면을 생성하는 View 객체는 ViewResolver가 구함.
